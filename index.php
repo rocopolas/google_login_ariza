@@ -50,16 +50,76 @@ if (!isset($_SESSION['access_token'])) {
 <body>
     <div class="container">
         <br />
-        <h2 align="center" style="text-align: center;"> Inicio de sesión con google</h2>
+        <h2 align="center" style="text-align: center;"> Inicio de sesión</h2>
         <br />
+        <!-- Mensajes de éxito/error -->
+        <?php if (isset($_SESSION['success'])): ?>
+            <div class="alert alert-success">
+                <?php 
+                echo $_SESSION['success']; 
+                unset($_SESSION['success']); 
+                ?>
+            </div>
+        <?php endif; ?>
+
+        <?php if (isset($_SESSION['error'])): ?>
+            <div class="alert alert-danger">
+                <?php 
+                echo $_SESSION['error']; 
+                unset($_SESSION['error']); 
+                ?>
+            </div>
+        <?php endif; ?>
+
+        <!-- Formulario de inicio de sesión -->
+        <form action="login.php" method="POST">
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" class="form-control" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Contraseña:</label>
+                <input type="password" class="form-control" id="password" name="password" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Iniciar sesión</button>
+        </form>
+        <p class="ml-5">o</p>
+        <div class="mt-4">
+            <a href="registro.html" class="btn btn-success">Registrarse</a>
+        </div>
+        
+        <div class="mt-4 mb-3">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">¿Olvidaste tu contraseña?</h5>
+                </div>
+                <div class="card-body" style="display: none;">
+                    <p class="mb-3">Si olvidaste tu contraseña, ingresa tu email y te enviaremos un código para recuperarla.</p>
+                    <form action="recuperar.php" method="POST" class="form-inline">
+                        <div class="form-group mx-sm-3">
+                            <input type="email" class="form-control" name="email" placeholder="Tu email" required>
+                        </div>
+                        <button type="submit" class="btn btn-light">Recuperar contraseña</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <script>
+        document.querySelector('.card-header').addEventListener('click', function() {
+            const body = this.parentElement.querySelector('.card-body');
+            body.style.display = body.style.display === 'block' ? 'none' : 'block';
+        });
+        </script>
+
+        
+        
         <div>
             <?php
                     if ($login_button == '') {
-                        echo '<div class="card-header">Welcome User</div><div class="card-body">';
-                        echo '<img src="' . $_SESSION["user_image"] . '" class="rounded-circle container"/>';
-                        echo '<h3><b>Name :</b> ' . $_SESSION['user_first_name'] . ' ' . $_SESSION['user_last_name'] . '</h3>';
-                        echo '<h3><b>Email :</b> ' . $_SESSION['user_email_address'] . '</h3>';
-                        echo '<h3><a href="logout.php">Logout</h3></div>';
+                        // Si ya está logueado, redirigir al dashboard
+                        header('Location: dashboard.php');
+                        exit;
                     } else {
                         echo '<div align="center">' . $login_button . '</div>';
                     }
